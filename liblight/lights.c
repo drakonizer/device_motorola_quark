@@ -226,7 +226,7 @@ set_light_notifications(__attribute__((unused)) struct light_device_t* dev,
 
 static int
 set_light_attention(__attribute__((unused)) struct light_device_t* dev,
-        struct light_state_t const* state
+        struct light_state_t const* state)
 {
     char blink_string[PAGE_SIZE];
     unsigned long ledON = 0, ledOFF = 0;
