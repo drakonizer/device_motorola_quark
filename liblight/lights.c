@@ -149,7 +149,7 @@ handle_speaker_battery_locked(char *value)
     if (is_lit(&g_notification)) {
         err = write_str(LED_FILE, value);
     }else if (is_lit(&g_battery)) {
-        //Turn on the led
+        //Turn off the led
         err = write_str(LED_FILE, value);
     }else {
         //Nothing to notify.turning led off
@@ -186,7 +186,7 @@ set_light_battery(__attribute__((unused)) struct light_device_t* dev,
     int err = 0;
     pthread_mutex_lock(&g_lock);
     g_battery = *state;
-    err = handle_speaker_battery_locked("1000,0");
+    err = handle_speaker_battery_locked("0,0");
     pthread_mutex_unlock(&g_lock);
     return err;
 }
@@ -202,42 +202,6 @@ set_light_notifications(__attribute__((unused)) struct light_device_t* dev,
     g_notification = *state;
 
     switch (state->flashMode) {
-        case LIGHT_FLASH_HARDWARE:
-            ledON = state->flashOnMS;
-            ledOFF = state->flashOffMS;
-            break;
-        case LIGHT_FLASH_TIMED:
-            ledON = state->flashOnMS;
-            ledOFF = state->flashOffMS;
-            break;
-        case LIGHT_FLASH_NONE:
-        default:
-            ledON = 0;
-            ledOFF = 0;
-            break;
-    }
-
-    sprintf(blink_string, "%lu,%lu", ledON, ledOFF);
-
-    err = handle_speaker_battery_locked(blink_string);
-    pthread_mutex_unlock(&g_lock);
-    return err;
-}
-
-static int
-set_light_attention(__attribute__((unused)) struct light_device_t* dev,
-        struct light_state_t const* state)
-{
-    char blink_string[PAGE_SIZE];
-    unsigned long ledON = 0, ledOFF = 0;
-    int err = 0;
-    pthread_mutex_lock(&g_lock);
-
-    switch (state->flashMode) {
-        case LIGHT_FLASH_HARDWARE:
-            ledON = state->flashOnMS;
-            ledOFF = state->flashOffMS;
-            break;
         case LIGHT_FLASH_TIMED:
             ledON = state->flashOnMS;
             ledOFF = state->flashOffMS;
@@ -288,8 +252,6 @@ static int open_lights(const struct hw_module_t* module, char const* name,
          set_light = set_light_battery;
     else if (0 == strcmp(LIGHT_ID_NOTIFICATIONS, name))
         set_light = set_light_notifications;
-    else if (0 == strcmp(LIGHT_ID_ATTENTION, name))
-        set_light = set_light_attention;
     else
         return -EINVAL;
 
