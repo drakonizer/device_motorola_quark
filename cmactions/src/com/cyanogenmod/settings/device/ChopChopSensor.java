@@ -60,6 +60,7 @@ public class ChopChopSensor implements SensorEventListener, UpdatedStateNotifier
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+
         long now = System.currentTimeMillis();
         if (now - mLastAction > DELAY_BETWEEN_CHOP_CHOP_IN_MS) {
             Log.d(TAG, "Allowing chop chop");
