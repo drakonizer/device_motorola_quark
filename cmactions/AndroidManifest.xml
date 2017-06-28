@@ -17,6 +17,7 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:label="@string/device_settings_app_name"
         android:persistent="true" >
 
