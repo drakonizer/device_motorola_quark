@@ -46,7 +46,7 @@ public class IrSilencer extends PhoneStateListener implements SensorEventListene
     private final Sensor mSensor;
     private final IrGestureVote mIrGestureVote;
 
-    private boolean mPhoneRinging;
+    private boolean mPhoneRinging, irEnable;
     private long mPhoneRingStartedMs;
 
     private boolean mAlarmRinging;
@@ -156,12 +156,14 @@ public class IrSilencer extends PhoneStateListener implements SensorEventListene
     };
 
     public void irEnabler(boolean enable) {
-        if (enable) {
+        if (enable && !irEnable) {
             mSensorHelper.registerListener(mSensor, this);
             mIrGestureVote.voteForSensors(IR_GESTURES_FOR_RINGING);
-        } else {
+            irEnable = true;
+        } else if (!enable && irEnable) {
             mSensorHelper.unregisterListener(IrSilencer.this);
             mIrGestureVote.voteForSensors(0);
+            irEnable = false;
         }
     }
 }
