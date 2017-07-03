@@ -49,14 +49,23 @@ public class IrGestureSensor implements ScreenStateNotifier, SensorEventListener
 
     @Override
     public void screenTurnedOn() {
-        ChangeIr();
         mScreenOn = true;
     }
 
     @Override
     public void screenTurnedOff() {
-        ChangeIr();
         mScreenOn = false;
+        if (mCMActionsSettings.isIrWakeupEnabled() && !mEnabled) {
+            Log.d(TAG, "Enabling");
+            mSensorHelper.registerListener(mSensor, this);
+            mIrGestureVote.voteForSensors(IR_GESTURES_FOR_SCREEN_OFF);
+            mEnabled = true;
+        } else if (!mCMActionsSettings.isIrWakeupEnabled() && mEnabled) {
+            Log.d(TAG, "Disabling");
+            mSensorHelper.unregisterListener(this);
+            mIrGestureVote.voteForSensors(0);
+            mEnabled = false;
+        }
     }
 
     @Override
@@ -71,17 +80,4 @@ public class IrGestureSensor implements ScreenStateNotifier, SensorEventListener
     public void onAccuracyChanged(Sensor mSensor, int accuracy) {
     }
 
-    public void ChangeIr() {
-        if (mCMActionsSettings.isIrWakeupEnabled() && !mEnabled) {
-            Log.d(TAG, "Enabling");
-            mSensorHelper.registerListener(mSensor, this);
-            mIrGestureVote.voteForSensors(IR_GESTURES_FOR_SCREEN_OFF);
-            mEnabled = true;
-        } else if (!mCMActionsSettings.isIrWakeupEnabled() && mEnabled) {
-            Log.d(TAG, "Disabling");
-            mSensorHelper.unregisterListener(this);
-            mIrGestureVote.voteForSensors(0);
-            mEnabled = false;
-        }
-    }
 }
