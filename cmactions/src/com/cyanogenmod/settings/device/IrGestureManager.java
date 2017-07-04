@@ -70,7 +70,7 @@ public class IrGestureManager {
                 gestures |= (1 << i);
             }
         }
-
+        Log.d(TAG, "gestures = " + gestures);
         return gestures;
     }
 
