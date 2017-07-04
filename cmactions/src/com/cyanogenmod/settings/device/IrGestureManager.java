@@ -78,7 +78,7 @@ public class IrGestureManager {
         if (mGestures != gestures) {
             boolean irDisabled = (gestures == 0);
             mGestures = gestures;
-
+            Log.d(TAG, "mGestures = " + mGestures);
             if (!nativeSetIrDisabled(irDisabled)) {
                 Log.e(TAG, "Failed setting IR disabled " + irDisabled);
             }
