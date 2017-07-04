@@ -70,15 +70,15 @@ public class IrGestureManager {
                 gestures |= (1 << i);
             }
         }
+
         return gestures;
     }
 
     private synchronized void updateSensorConfig(int gestures) {
-         Log.d(TAG, "mGestures = " + mGestures + " gestures = " + gestures);
         if (mGestures != gestures) {
             boolean irDisabled = (gestures == 0);
             mGestures = gestures;
-            Log.d(TAG, "in if mGestures = " + mGestures + " gestures = " + gestures);
+
             if (!nativeSetIrDisabled(irDisabled)) {
                 Log.e(TAG, "Failed setting IR disabled " + irDisabled);
             }

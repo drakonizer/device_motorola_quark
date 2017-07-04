@@ -26,13 +26,14 @@ import static com.cyanogenmod.settings.device.IrGestureManager.*;
 public class IrGestureSensor implements ScreenStateNotifier, SensorEventListener {
     private static final String TAG = "CMActions-IRGestureSensor";
 
-    private static final int IR_GESTURES_FOR_SCREEN_OFF = (1 << IR_GESTURE_APPROACH);
+    private static final int IR_GESTURES_FOR_SCREEN_OFF = (1 << IR_GESTURE_SWIPE) | (1 << IR_GESTURE_APPROACH);
 
     private final CMActionsSettings mCMActionsSettings;
     private final SensorHelper mSensorHelper;
     private final SensorAction mSensorAction;
     private final IrGestureVote mIrGestureVote;
     private final Sensor mSensor;
+    private long time;
 
     private boolean mEnabled, mScreenOn;
 
@@ -49,6 +50,7 @@ public class IrGestureSensor implements ScreenStateNotifier, SensorEventListener
 
     @Override
     public void screenTurnedOn() {
+        time = System.currentTimeMillis();
         mScreenOn = true;
     }
 
@@ -60,17 +62,19 @@ public class IrGestureSensor implements ScreenStateNotifier, SensorEventListener
             mSensorHelper.registerListener(mSensor, this);
             mIrGestureVote.voteForSensors(IR_GESTURES_FOR_SCREEN_OFF);
             mEnabled = true;
-        } else if (!mCMActionsSettings.isIrWakeupEnabled() && mEnabled) {
-            Log.d(TAG, "Disabling");
-            mSensorHelper.unregisterListener(this);
-            mIrGestureVote.voteForSensors(0);
-            mEnabled = false;
         }
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
         int gesture = (int) event.values[1];
+
+        if (mEnabled && mScreenOn && ((System.currentTimeMillis() - 5000) > time)) {
+             Log.d(TAG, "Disabling");
+             mSensorHelper.unregisterListener(this);
+             mIrGestureVote.voteForSensors(0);
+             mEnabled = false;
+        }
 
         if (!mScreenOn && (gesture == IR_GESTURE_SWIPE || gesture == IR_GESTURE_APPROACH))
             mSensorAction.action();
