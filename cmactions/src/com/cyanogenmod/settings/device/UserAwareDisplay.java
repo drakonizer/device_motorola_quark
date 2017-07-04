@@ -190,7 +190,7 @@ public class UserAwareDisplay implements ScreenStateNotifier {
         public void onSensorChanged(SensorEvent event) {
             int gesture = (int) event.values[1];
 
-            if (!mScreenOn) {
+            if (mScreenOn) {
                 if (gesture == IR_GESTURE_OBJECT_DETECTED) {
                     setObjectIsDetected(true);
                 } else if (gesture == IR_GESTURE_OBJECT_NOT_DETECTED) {
@@ -206,7 +206,7 @@ public class UserAwareDisplay implements ScreenStateNotifier {
     private SensorEventListener mStowListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
-            if (!mScreenOn) setIsStowed(event.values[0] != 0);
+            if (mScreenOn) setIsStowed(event.values[0] != 0);
         }
 
         @Override
