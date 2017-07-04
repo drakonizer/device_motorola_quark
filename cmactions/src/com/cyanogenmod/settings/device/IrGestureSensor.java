@@ -26,7 +26,7 @@ import static com.cyanogenmod.settings.device.IrGestureManager.*;
 public class IrGestureSensor implements ScreenStateNotifier, SensorEventListener {
     private static final String TAG = "CMActions-IRGestureSensor";
 
-    private static final int IR_GESTURES_FOR_SCREEN_OFF = (1 << IR_GESTURE_SWIPE) | (1 << IR_GESTURE_APPROACH);
+    private static final int IR_GESTURES_FOR_SCREEN_OFF = (1 << IR_GESTURE_APPROACH);
 
     private final CMActionsSettings mCMActionsSettings;
     private final SensorHelper mSensorHelper;
