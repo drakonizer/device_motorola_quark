@@ -69,7 +69,7 @@ public class IrGestureSensor implements ScreenStateNotifier, SensorEventListener
     public void onSensorChanged(SensorEvent event) {
         int gesture = (int) event.values[1];
 
-        if (mEnabled && mScreenOn && ((System.currentTimeMillis() - 5000) > time)) {
+        if (mEnabled && mScreenOn && ((System.currentTimeMillis() - 3000) > time)) {
              Log.d(TAG, "Disabling");
              mSensorHelper.unregisterListener(this);
              mIrGestureVote.voteForSensors(0);
